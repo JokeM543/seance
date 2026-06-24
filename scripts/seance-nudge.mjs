@@ -19,12 +19,35 @@ function readStdin() {
   }
 }
 
+// Named presets → transcript size in KB. Choose by how long you let a session grow
+// before /seance nudges you: "light" nudges early, "long" nudges late.
+const PRESETS_KB = { light: 150, medium: 350, long: 700 };
+const DISABLED = new Set(["off", "none", "disabled", "false", "0"]);
+
+// Resolve the nudge threshold (bytes) from config. Accepts a preset name, a raw KB number,
+// or an off-switch. Falls back to "medium". Backward-compatible with the old numeric
+// `nudge_kb` option. Returns 0 when disabled.
+function resolveThresholdBytes() {
+  const raw = (
+    process.env.CLAUDE_PLUGIN_OPTION_NUDGE ??
+    process.env.CLAUDE_PLUGIN_OPTION_NUDGE_KB ?? // legacy numeric option
+    "medium"
+  )
+    .toString()
+    .trim()
+    .toLowerCase();
+
+  if (raw === "") return PRESETS_KB.medium * 1024;
+  if (DISABLED.has(raw)) return 0;
+  if (raw in PRESETS_KB) return PRESETS_KB[raw] * 1024;
+  const n = Number(raw); // raw KB for power users
+  if (Number.isFinite(n)) return Math.max(0, n) * 1024;
+  return PRESETS_KB.medium * 1024; // unrecognized → default
+}
+
 function main() {
-  // Threshold in KB from plugin user config (CLAUDE_PLUGIN_OPTION_NUDGE_KB), default 400.
-  // 0 (or negative) disables the nudge entirely.
-  const kb = Number(process.env.CLAUDE_PLUGIN_OPTION_NUDGE_KB ?? 400);
-  if (!Number.isFinite(kb) || kb <= 0) return;
-  const threshold = kb * 1024;
+  const threshold = resolveThresholdBytes();
+  if (threshold <= 0) return; // disabled
 
   let input;
   try {

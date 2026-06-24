@@ -69,11 +69,12 @@ channel — shown to **you only**, never injected into the model context, so it 
 It fires on first crossing then once per further increment, never every turn, and never blocks
 or slows a prompt.
 
-Tune the threshold in the plugin config (`/plugin` → seance):
+Tune **how long you let a session grow before the nudge** in the plugin config
+(`/plugin` → seance):
 
-| Option     | Default | Meaning                                                        |
-| ---------- | ------- | -------------------------------------------------------------- |
-| `nudge_kb` | `400`   | Transcript size (KB) that triggers the nudge. `0` disables it. |
+| Option  | Default  | Values                                                                                |
+| ------- | -------- | ------------------------------------------------------------------------------------- |
+| `nudge` | `medium` | `light` (~150 KB, early) · `medium` (~350 KB) · `long` (~700 KB, late) · `off` — or a raw KB number |
 
 ## The helpers
 

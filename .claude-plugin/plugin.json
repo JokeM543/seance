@@ -1,17 +1,16 @@
 {
   "name": "seance",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Summon a fresh Claude chat that channels the context of your current session.",
   "author": {
     "name": "JokeM543"
   },
   "userConfig": {
-    "nudge_kb": {
-      "type": "number",
-      "title": "Seance nudge threshold (KB)",
-      "description": "Show a reminder to run /seance once the session transcript grows past this size. Set to 0 to disable.",
-      "default": 400,
-      "min": 0
+    "nudge": {
+      "type": "string",
+      "title": "Séance nudge threshold",
+      "description": "How long to let a session grow before reminding you to run /seance: light (~150 KB, nudges early), medium (~350 KB), long (~700 KB, nudges late), or off. You can also enter a raw KB number.",
+      "default": "medium"
     }
   }
 }
