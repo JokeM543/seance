@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Editor noise
+*.swp
+*~
+
+# Local test artifacts
+.claude/seance.md

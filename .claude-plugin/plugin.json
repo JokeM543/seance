@@ -1,0 +1,17 @@
+{
+  "name": "seance",
+  "version": "0.2.0",
+  "description": "Summon a fresh Claude chat that channels the context of your current session.",
+  "author": {
+    "name": "JokeM543"
+  },
+  "userConfig": {
+    "nudge_kb": {
+      "type": "number",
+      "title": "Seance nudge threshold (KB)",
+      "description": "Show a reminder to run /seance once the session transcript grows past this size. Set to 0 to disable.",
+      "default": 400,
+      "min": 0
+    }
+  }
+}

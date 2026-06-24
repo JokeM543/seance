@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "seance",
+  "description": "Summon a fresh Claude chat that channels the context of your current session.",
+  "owner": {
+    "name": "JokeM543",
+    "url": "https://github.com/JokeM543"
+  },
+  "plugins": [
+    {
+      "name": "seance",
+      "description": "Summarize this session and open a brand-new chat pre-loaded with it.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
