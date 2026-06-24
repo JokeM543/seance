@@ -6,6 +6,10 @@
 
 > Summon a fresh Claude chat that channels the context of your current session.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Running /seance writes a handoff note and opens a fresh Claude chat pre-loaded with it" width="820">
+</p>
+
 `/seance` summarizes what you're working on and opens a **brand-new** Claude chat in your
 IDE, pre-loaded with that context — so the next session grasps the task at once. Useful when
 a conversation gets long, you want a clean slate, or you're parking work to resume later.
@@ -13,12 +17,6 @@ a conversation gets long, you want a clean slate, or you're parking work to resu
 Unlike `/compact` (which continues the *same* session), `/seance` starts a *new* one and
 bridges the gap with a written note. A long session re-sends its whole transcript every turn;
 `/seance` lets you reset to a tiny baseline instead of dragging that weight forward.
-
-```text
-  long session  ──/seance──▶  .claude/seance.md  ──deep link──▶  ✨ fresh chat
-  (heavy context)             (tight handoff note)               (auto-starts from
-                                                                  "Next steps")
-```
 
 ## How it works
 
