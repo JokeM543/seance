@@ -1,5 +1,9 @@
 # 🔮 seance
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)](https://code.claude.com/docs/en/plugins)
+[![GitHub stars](https://img.shields.io/github/stars/JokeM543/seance?style=social)](https://github.com/JokeM543/seance)
+
 > Summon a fresh Claude chat that channels the context of your current session.
 
 `/seance` summarizes what you're working on and opens a **brand-new** Claude chat in your
@@ -9,6 +13,12 @@ a conversation gets long, you want a clean slate, or you're parking work to resu
 Unlike `/compact` (which continues the *same* session), `/seance` starts a *new* one and
 bridges the gap with a written note. A long session re-sends its whole transcript every turn;
 `/seance` lets you reset to a tiny baseline instead of dragging that weight forward.
+
+```text
+  long session  ──/seance──▶  .claude/seance.md  ──deep link──▶  ✨ fresh chat
+  (heavy context)             (tight handoff note)               (auto-starts from
+                                                                  "Next steps")
+```
 
 ## How it works
 
