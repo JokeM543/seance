@@ -1,6 +1,6 @@
 {
   "name": "seance",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Summon a fresh Claude chat that channels the context of your current session.",
   "author": {
     "name": "JokeM543"
@@ -11,6 +11,12 @@
       "title": "Séance nudge threshold",
       "description": "How long to let a session grow before reminding you to run /seance: light (~150 KB, nudges early), medium (~350 KB), long (~700 KB, nudges late), or off. You can also enter a raw KB number.",
       "default": "medium"
+    },
+    "summarizer": {
+      "type": "string",
+      "title": "Séance summarizer model",
+      "description": "Which model writes the note from the trimmed transcript: sonnet (default, spares your Opus budget), haiku (cheapest), opus (best note but costs more than in-session), or self (compose in the current session, no separate call).",
+      "default": "sonnet"
     }
   }
 }

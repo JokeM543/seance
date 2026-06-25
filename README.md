@@ -61,6 +61,26 @@ Writes `.claude/seance.md` and opens a new pre-loaded chat. For long notes it pa
 URL handler — the file is always the source of truth. Outside an IDE it prints a ready-to-run
 `claude "$(cat .claude/seance.md)"` instead.
 
+### Note written by a cheaper model (spares your Opus budget)
+
+By default `/seance` does **not** make your main (Opus) session write the note. Instead it
+runs `seance-summarize.mjs`, which reads the session transcript from disk, trims it to a small
+digest (a 1.4 MB transcript → ~17k tokens — mostly by dropping tool output and thinking), and
+asks a separate `claude -p --model <summarizer>` to write the note. Two payoffs:
+
+- **Spares your Opus usage** — the heavy read is done by Sonnet/Haiku, not Opus. Useful when
+  you're near a usage limit.
+- **Works when the chat is maxed out** — because it reads the transcript from disk, it can hand
+  off even when the main session is too full to take a turn ("Prompt is too long"). See the
+  standalone command under [The helpers](#the-helpers).
+
+If the summarizer call fails (or you set `summarizer = self`), `/seance` falls back to composing
+the note in the current session — the original behavior.
+
+> Honest note: this is about **sparing the Opus budget**, not a huge absolute saving — the
+> in-session note was already cheap thanks to prompt caching. Picking `opus` as the summarizer
+> costs *more* than in-session (cold, uncached), so only use it if you want max note quality.
+
 ### Size nudge (zero model-token cost)
 
 A `UserPromptSubmit` hook watches the session transcript and, once it grows past a threshold,
@@ -72,20 +92,31 @@ or slows a prompt.
 Tune **how long you let a session grow before the nudge** in the plugin config
 (`/plugin` → seance):
 
-| Option  | Default  | Values                                                                                |
-| ------- | -------- | ------------------------------------------------------------------------------------- |
-| `nudge` | `medium` | `light` (~150 KB, early) · `medium` (~350 KB) · `long` (~700 KB, late) · `off` — or a raw KB number |
+| Option       | Default  | Values                                                                                |
+| ------------ | -------- | ------------------------------------------------------------------------------------- |
+| `nudge`      | `medium` | `light` (~150 KB, early) · `medium` (~350 KB) · `long` (~700 KB, late) · `off` — or a raw KB number |
+| `summarizer` | `sonnet` | `sonnet` · `haiku` (cheapest) · `opus` (best note, costs more) · `self` (compose in-session) |
 
 ## The helpers
 
 ```bash
-node scripts/seance-open.mjs --file .claude/seance.md            # what /seance runs
-node scripts/seance-open.mjs --prompt "some text"               # open with inline text
-node scripts/seance-open.mjs --file .claude/seance.md --dry-run # print, don't open
+# Generate the note with a cheaper model and open a fresh chat (what /seance runs):
+node scripts/seance-summarize.mjs --open
+node scripts/seance-summarize.mjs --dry-run          # build+measure the digest, no model call
+node scripts/seance-summarize.mjs --model haiku --print
+
+# Just open a chat from an existing note:
+node scripts/seance-open.mjs --file .claude/seance.md
+node scripts/seance-open.mjs --file .claude/seance.md --dry-run   # print URL, don't open
 ```
 
-`seance-open.mjs` does IDE detection (from `~/.claude/ide/<port>.lock`), URL-encodes the note,
-and opens the deep link. `seance-nudge.mjs` is the hook described above.
+- `seance-summarize.mjs` — locates the newest transcript in `~/.claude/projects/<cwd>/`, trims
+  it, and pipes it to `claude -p --model <summarizer>` to write the note. **This is also your
+  escape hatch when the chat is maxed out:** run it from a plain terminal and it hands off
+  without needing the stuck session.
+- `seance-open.mjs` — IDE detection (from `~/.claude/ide/<port>.lock`), URL-encodes the note,
+  opens the deep link.
+- `seance-nudge.mjs` — the size-nudge hook described above.
 
 ## Notes
 
